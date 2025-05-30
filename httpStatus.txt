@@ -1,0 +1,26 @@
+✅ For successful operations:
+200     OK                     For successful GET, PUT, or DELETE requests.
+
+201	    Created                After creating a resource (e.g., POST to a database).
+
+
+
+
+❌ For client errors (4xx):
+
+400     Bad                   Request When required data is missing or invalid.
+
+401     Unauthorized          When the user is not logged in.
+
+403     Forbidden             When the user is logged in but not allowed to do something.
+
+404     Not                   Found	When the requested resource doesn’t exist.
+
+
+
+
+🔥 For server errors (5xx):
+
+500	    Internal              Server Error	Generic server error.
+
+503	    Service               Unavailable	Server is down or busy (optional for advanced use).
