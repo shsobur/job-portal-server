@@ -37,9 +37,11 @@ async function run() {
     app.post("/user-role-data", async (req, res) => {
       try {
         const user = req.body;
-        const isExist = await usersCollections.findOne({userEmail: req.body.userEmail});
+        const isExist = await usersCollections.findOne({
+          userEmail: req.body.userEmail,
+        });
 
-        if(isExist) {
+        if (isExist) {
           return res.status(200).json({ message: "User already exists" });
         }
 
@@ -47,7 +49,20 @@ async function run() {
         res.status(201).send(result);
       } catch (error) {
         console.error("Error inserting user role data:", error);
-        res.status(500).send({ error: "Failed to insert user role data"});
+        res.status(500).send({ error: "Failed to insert user role data" });
+      }
+    });
+
+    // Get use data__
+    app.get("/current-user-data/:email", async (req, res) => {
+      try {
+        const email = req.params.email;
+        const query = { userEmail: email };
+        const result = await usersCollections.findOne(query);
+        res.status(200).send(result);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        res.status(500).json({ message: "Internal Server Error" });
       }
     });
 
