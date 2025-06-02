@@ -67,10 +67,10 @@ async function run() {
     });
 
     // Post job circular__
-    app.post("/new-job-circular", async (req, res) => {
+    app.post("/add-job-circular", async (req, res) => {
       try {
-        const jobCircular = req.body;
-        const result = await jobsCollections.insertOne(jobCircular);
+        const jobData = req.body;
+        const result = await jobsCollections.insertOne(jobData);
         res.status(201).send(result);
       } catch (error) {
         console.error("Error inserting job circular:", error);
