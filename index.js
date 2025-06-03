@@ -10,7 +10,13 @@ const { MongoClient, ServerApiVersion } = require("mongodb");
 // MongoDB net URL__
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.g4yea9q.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+    credentials: true,
+  })
+);
+app.use(cookieParser());
 app.use(express.json());
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -32,6 +38,36 @@ async function run() {
     // DB all collections__
     const jobsCollections = client.db("jobPortal").collection("jobs");
     const usersCollections = client.db("jobPortal").collection("users");
+
+    // JWT Token__
+    app.post("/jwt", async (req, res) => {
+      try {
+        const { email } = req.body;
+        if (!email) {
+          return res.status(400).send({ error: "Email is required" });
+        }
+
+        const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        if (!isValidEmail) {
+          return res.status(400).send({ error: "Invalid email format" });
+        }
+
+        const token = jwt.sign({ email }, process.env.JWT_SECRET_ACCESS_TOKEN, {
+          expiresIn: "1d",
+        });
+
+        res.cookie("token", token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+          maxAge: 24 * 60 * 60 * 1000,
+        });
+
+        res.send({ success: true });
+      } catch (err) {
+        res.status(500).send({ error: "Internal server error" });
+      }
+    });
 
     // Post use data__
     app.post("/user-role-data", async (req, res) => {
